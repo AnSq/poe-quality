@@ -21,8 +21,13 @@ def find_solution(quals):
     find_forties(0, [], quals, forties)
 
     quals_c = collections.Counter(quals)
-    forties_map = {str(collections.Counter(x)):x for x in forties}
     forties_c = [collections.Counter(x) for x in forties]
+
+    forties_map = {}
+    for f in forties:
+        c = str(collections.Counter(f))
+        if c not in forties_map:
+            forties_map[c] = f
 
     solutions = []
     solution_tree(quals_c, [], forties_c, solutions, sum(quals)//40)
