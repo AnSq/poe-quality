@@ -3,20 +3,24 @@
 import itertools
 import sys
 import collections
+import time
+import argparse
 
 
 def main():
-    #quals = [int(i) for i in raw_input("Qualitites (space separated): ").split()]
-    quals = [int(i) for i in sys.argv[1:]]
+    parser = argparse.ArgumentParser(description="Finds perfect sets of 40% quality for Path of Exile")
+    parser.add_argument("-t", "--timeout", action="store",            default=5, type=float, help="maximum time in seconds to search for solutions", metavar="TIME")
+    parser.add_argument("quals",           action="store", nargs="*",            type=int,   help="list of quality values",                          metavar="QUALITY")
+    cmdargs = parser.parse_args()
 
     # print some overview
-    print "Total items:   %d" % len(quals)
-    print "Total quality: %d" % sum(quals)
+    print "Total items:   %d" % len(cmdargs.quals)
+    print "Total quality: %d" % sum(cmdargs.quals)
 
-    print find_solution(quals)
+    print find_solution(cmdargs.quals, cmdargs.timeout)
 
 
-def find_solution(quals):
+def find_solution(quals, timeout):
     forties = []
     find_forties(0, [], quals, forties)
 
@@ -30,10 +34,16 @@ def find_solution(quals):
             forties_map[c] = f
 
     solutions = []
-    solution_tree(quals_c, [], forties_c, solutions, sum(quals)//40)
+    try:
+        solution_tree(quals_c, [], forties_c, solutions, sum(quals)//40, time.time() + timeout)
+    except TimeoutException as e:
+        print "Time exceeded. Use the --timeout command line option to specify more time."
 
-    solution = sorted(solutions, key=len)[-1]
-    return [forties_map[str(x)] for x in solution]
+    if solutions:
+        solution = sorted(solutions, key=len)[-1]
+        return [forties_map[str(x)] for x in solution]
+    else:
+        return None
 
 
 def find_forties(total, used, remaining, forties):
@@ -50,18 +60,29 @@ def find_forties(total, used, remaining, forties):
             find_forties(total + remaining[i], new_used, remaining[i+1:], forties)
 
 
-def solution_tree(quals_remaining, used, forties_remaining, solutions, max_forties):
-    if solutions and len(solutions[-1]) >= max_forties:
-        return
+def solution_tree(quals_remaining, used, forties_remaining, solutions, max_forties, end_time):
+    if time.time() > end_time:
+        raise TimeoutException()
 
     if forties_remaining and quals_remaining and sum(quals_remaining.elements()) >= 40:
         for i in range(len(forties_remaining)):
             if quals_remaining & forties_remaining[i] == forties_remaining[i]:
                 new_used = list(used)
                 new_used.append(forties_remaining[i])
-                solution_tree(quals_remaining - forties_remaining[i], new_used, forties_remaining[i+1:], solutions, max_forties)
+
+                if solution_tree(quals_remaining - forties_remaining[i], new_used, forties_remaining[i+1:], solutions, max_forties, end_time):
+                    return True
     else:
         solutions.append(used)
+
+    if solutions and len(solutions[-1]) >= max_forties:
+        return True
+
+    return False
+
+
+class TimeoutException (Exception):
+    pass
 
 
 if __name__ == "__main__":
