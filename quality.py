@@ -29,9 +29,9 @@ def find_solution(quals, timeout):
 
     forties_map = {}
     for f in forties:
-        c = str(collections.Counter(f))
-        if c not in forties_map:
-            forties_map[c] = f
+        s = str(collections.Counter(f))
+        if s not in forties_map:
+            forties_map[s] = f
 
     solutions = []
     try:
@@ -66,7 +66,7 @@ def solution_tree(quals_remaining, used, forties_remaining, solutions, max_forti
 
     if forties_remaining and quals_remaining and sum(quals_remaining.elements()) >= 40:
         for i in range(len(forties_remaining)):
-            if quals_remaining & forties_remaining[i] == forties_remaining[i]:
+            if (quals_remaining & forties_remaining[i]) == forties_remaining[i]: # if forties_remaining[i] "fits in" quals_remaining
                 new_used = list(used)
                 new_used.append(forties_remaining[i])
 

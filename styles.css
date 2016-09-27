@@ -1,0 +1,49 @@
+body {
+    font-family: "Trebuchet MS", sans-serif;
+}
+
+
+label, .label-spacer {
+    text-align: right;
+    display: inline-block;
+    width: 80px;
+}
+
+label:after {
+    content: ":";
+}
+
+
+.top {
+    vertical-align: top;
+}
+
+
+hr {
+    border: none;
+    border-top: 1px solid black;
+    margin-left: -1em;
+    margin-right: -1em;
+}
+
+
+input, textarea {
+    margin: 1px;
+}
+
+
+h1 {
+    text-align: center;
+}
+
+
+#content {
+    margin: auto;
+    display: table;
+}
+
+
+#timeout {
+    width: 48px;
+    text-align: center;
+}

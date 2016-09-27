@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>PoE Quality Set Calculator</title>
+        <link rel="stylesheet" href="styles.css" type="text/css">
+        <script src="quality.js" type="application/javascript"></script>
+    </head>
+    <body>
+        <div>
+            <div id="content">
+                <h1>PoE Quality Set Calculator</h1>
+                <form id="form" name="form">
+                    <label for="quals" class="top">Qualities</label>
+                    <textarea id="quals" name="quals" placeholder="Enter quality values here separated by spaces" rows="3" cols="48" autofocus></textarea>
+                    <br>
+                    <label for="timeout">Time limit</label>
+                    <input id="timeout" name="timeout" type="number" min="0" value="5"> seconds
+                    <br>
+                    <span class="label-spacer"></span>
+                    <input id="calculate" name="calculate" type="button" value="Calculate">
+                    <hr>
+                    <label for="output" class="top">Output</label>
+                    <textarea id="output" name="output" placeholder="Results will appear here" rows="16" cols="48" readonly></textarea>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
