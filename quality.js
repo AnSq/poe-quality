@@ -1,6 +1,9 @@
 "use strict";
 
 
+var timed_out; // yes, I'm using a global variable, deal with it
+
+
 function sum(arr) {
     return arr.reduce(function(a,b){return a+b}, 0);
 }
@@ -81,8 +84,20 @@ function multiset_subtract(a, b) {
 
 
 function find_solution(quals, timeout) {
+    timed_out = 0;
+    var end_time = Date.now() + (timeout * 1000);
+
     var forties = [];
-    find_forties(0, [], quals, forties);
+    try {
+        find_forties(0, [], quals, forties, end_time);
+    }
+    catch (e) {
+        if (e.message === "Timeout") {
+            timed_out = 1;
+            return null;
+        }
+        else {throw e;}
+    }
 
     var quals_ms = multiset_create(quals);
 
@@ -101,12 +116,11 @@ function find_solution(quals, timeout) {
 
     var solutions = [];
     try {
-        solution_tree(quals_ms, [], forties_ms, solutions, Math.floor(sum(quals) / 40), Date.now() + (timeout * 1000));
+        solution_tree(quals_ms, [], forties_ms, solutions, Math.floor(sum(quals) / 40), end_time);
     }
     catch (e) {
-        if (e.message == "Timeout") {
-            console.log("Time exceeded");
-        }
+        if (e.message === "Timeout") {timed_out = 2;}
+        else {throw e;}
     }
 
     if (solutions.length) {
@@ -124,7 +138,11 @@ function find_solution(quals, timeout) {
 }
 
 
-function find_forties(total, used, remaining, forties) {
+function find_forties(total, used, remaining, forties, end_time) {
+    if (Date.now() > end_time) {
+        throw new Error("Timeout");
+    }
+
     if (total === 40) {
         forties.push(used);
         return;
@@ -136,7 +154,7 @@ function find_forties(total, used, remaining, forties) {
         for (var i = 0; i < remaining.length; i++) {
             var new_used = used.slice();
             new_used.push(remaining[i]);
-            find_forties(total + remaining[i], new_used, remaining.slice(i+1), forties);
+            find_forties(total + remaining[i], new_used, remaining.slice(i+1), forties, end_time);
         }
     }
 }
@@ -144,6 +162,9 @@ function find_forties(total, used, remaining, forties) {
 
 function solution_tree(quals_remaining, used, forties_remaining, solutions, max_forties, end_time) {
     if (Date.now() > end_time) {
+        if (used.length) {
+            solutions.push(used);
+        }
         throw new Error("Timeout");
     }
 
@@ -179,27 +200,43 @@ function format_output(quals, solution) {
     result += "    Total Quality:   " + total + "\n";
     result += "    Quality / 40:    " + (total / 40) + "\n";
     result += "\n";
-    result += "Solution:\n";
-    var num_items = solution.reduce(function(p,c){return p+c.length}, 0);
-    result += "    Number of Items: " + num_items + "\n";
-    result += "    Total Quality:   " + (solution.length * 40) + "\n";
-    result += "    Currency:        " + solution.length + "\n";
-    result += "\n";
-    result += "Sell Items in This Order:\n";
 
-    for (var i in solution) {
-        result += "    ";
-        for (var j in solution[i]) {
-            if (solution[i][j].toString().length < 2) {
-                result += " ";
+    if (solution && solution.length) {
+        result += "Solution:\n";
+        var num_items = solution.reduce(function(p,c){return p+c.length}, 0);
+        result += "    Number of Items: " + num_items + "\n";
+        result += "    Total Quality:   " + (solution.length * 40) + "\n";
+        result += "    Currency:        " + solution.length + "\n";
+        result += "\n";
+        result += "Sell Items in This Order:\n";
+
+        for (var i in solution) {
+            result += "    ";
+            for (var j in solution[i]) {
+                if (solution[i][j].toString().length < 2) {
+                    result += " ";
+                }
+                result += solution[i][j];
+                if (j < solution[i].length - 1) {
+                    result += "  ";
+                }
             }
-            result += solution[i][j];
-            if (j < solution[i].length - 1) {
-                result += "  ";
+            if (i < solution.length - 1) {
+                result += "\n";
             }
         }
-        if (i < solution.length - 1) {
-            result += "\n";
+    }
+    else {
+        result += "No solution found";
+    }
+
+    if (timed_out) {
+        result += "\n\nCalculation exceeded time limit in stage " + timed_out + "\n";
+        if (timed_out === 1) {
+            result += "Try using fewer items or adding more time"
+        }
+        else if (timed_out === 2) {
+            result += "Adding more time may give a better solution";
         }
     }
 
@@ -210,13 +247,15 @@ function format_output(quals, solution) {
 function calculate() {
     document.getElementById("output").value = "";
     var quals = document.getElementById("quals").value.trim().replace(/ +/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
-    var timeout = parseInt(document.getElementById("timeout").value);
+    var timeout = parseFloat(document.getElementById("timeout").value);
     var solution = find_solution(quals, timeout);
     document.getElementById("output").value = format_output(quals, solution);
 }
 
 
 document.addEventListener("DOMContentLoaded", function(event) {
+    document.getElementById("output").value = "";
+
     document.getElementById("quals").onkeypress = function(event) {
         if (event.keyCode === 13 && event.ctrlKey) {
             calculate();
