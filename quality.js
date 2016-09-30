@@ -1,7 +1,7 @@
 "use strict";
 
 
-var timed_out; // yes, I'm using a global variable, deal with it
+var timed_out;
 
 
 function sum(arr) {
@@ -163,7 +163,7 @@ function find_forties(total, used, remaining, forties, end_time) {
 function solution_tree(quals_remaining, used, forties_remaining, solutions, max_forties, end_time) {
     if (Date.now() > end_time) {
         if (used.length) {
-            solutions.push(used);
+            solutions.push(used); //keep partial solution
         }
         throw new Error("Timeout");
     }
@@ -208,19 +208,20 @@ function format_output(quals, solution) {
         result += "    Total Quality:   " + (solution.length * 40) + "\n";
         result += "    Currency:        " + solution.length + "\n";
         result += "\n";
-        result += "Sell Items in This Order:\n";
+        result += "Sets of 40%:\n";
 
         for (var i in solution) {
-            result += "    ";
+            result += "    [";
             for (var j in solution[i]) {
                 if (solution[i][j].toString().length < 2) {
                     result += " ";
                 }
                 result += solution[i][j];
                 if (j < solution[i].length - 1) {
-                    result += "  ";
+                    result += ",  ";
                 }
             }
+            result += "]";
             if (i < solution.length - 1) {
                 result += "\n";
             }
@@ -246,7 +247,7 @@ function format_output(quals, solution) {
 
 function calculate() {
     document.getElementById("output").value = "";
-    var quals = document.getElementById("quals").value.trim().replace(/ +/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
+    var quals = document.getElementById("quals").value.trim().replace(/\s+/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
     var timeout = parseFloat(document.getElementById("timeout").value);
     var solution = find_solution(quals, timeout);
     document.getElementById("output").value = format_output(quals, solution);
@@ -256,11 +257,12 @@ function calculate() {
 document.addEventListener("DOMContentLoaded", function(event) {
     document.getElementById("output").value = "";
 
-    document.getElementById("quals").onkeypress = function(event) {
+    // ctrl-enter to calculate
+    document.getElementById("quals").addEventListener("keypress", function(event) {
         if (event.keyCode === 13 && event.ctrlKey) {
             calculate();
         }
-    };
+    });
 
-    document.getElementById("calculate").onclick = calculate;
+    document.getElementById("calculate").addEventListener("click", calculate);
 });

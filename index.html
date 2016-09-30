@@ -11,18 +11,27 @@
             <div id="content">
                 <h1>PoE Quality Set Calculator</h1>
                 <form id="form" name="form">
-                    <label for="quals" class="top">Qualities</label>
+                    <label for="quals" class="top">Qualities:</label>
                     <textarea id="quals" name="quals" placeholder="Enter quality values here separated by spaces" rows="3" cols="48" autofocus></textarea>
                     <br>
-                    <label for="timeout">Time limit</label>
+                    <label for="timeout">Time limit:</label>
                     <input id="timeout" name="timeout" type="number" min="0" step="any" value="5"> seconds
                     <br>
                     <span class="label-spacer"></span>
                     <input id="calculate" name="calculate" type="button" value="Calculate">
                     <hr>
-                    <label for="output" class="top">Output</label>
+                    <label for="output" class="top">Output:</label>
                     <textarea id="output" name="output" placeholder="Results will appear here" rows="16" cols="48" readonly></textarea>
                 </form>
+                <!--<div id="helpbox">
+                    <input id="helptoggle" type="checkbox">
+                    <label for="helptoggle"><a id="helptitle">Help</a></label>
+                    <div id="helpcontent">
+                        test test
+                        <br>
+                        test test
+                    </div>
+                </div>-->
             </div>
         </div>
     </body>

@@ -3,14 +3,10 @@ body {
 }
 
 
-label, .label-spacer {
+label:not([for="helptoggle"]), .label-spacer {
     text-align: right;
     display: inline-block;
     width: 80px;
-}
-
-label:after {
-    content: ":";
 }
 
 
@@ -46,4 +42,52 @@ h1 {
 #timeout {
     width: 48px;
     text-align: center;
+}
+
+
+#helpbox {
+    display: table;
+    margin-left: auto;
+    margin-top: 0.5em;
+    font-size: 80%;
+    text-align: right;
+}
+
+
+#helptoggle {
+    display: none;
+}
+
+#helptoggle:checked + label #helptitle:before {
+    content: "▾\a0";
+    /*content: "-\a0";*/
+}
+
+#helptoggle:checked ~ #helpcontent {
+    height: auto;
+}
+
+
+#helptitle {
+    color: blue;
+}
+
+#helptitle::before {
+    content: "▸\a0";
+    /*content: "+\a0";*/
+    text-decoration: none;
+    display: inline-block;
+}
+
+#helptitle:hover {
+    text-decoration: underline;
+}
+
+
+#helpcontent {
+    font-size: 80%;
+    height: 0;
+    overflow: hidden;
+    margin-right: 1.5em;
+    text-align: left;
 }
