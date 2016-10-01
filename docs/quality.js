@@ -247,7 +247,7 @@ function format_output(quals, solution) {
 
 function calculate() {
     document.getElementById("output").value = "";
-    var quals = document.getElementById("quals").value.trim().replace(/\s+/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
+    var quals = document.getElementById("quals").value.trim().replace(/\D+/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
     var timeout = parseFloat(document.getElementById("timeout").value);
     var solution = find_solution(quals, timeout);
     document.getElementById("output").value = format_output(quals, solution);
