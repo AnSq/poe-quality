@@ -208,7 +208,7 @@ function format_output(quals, solution) {
         result += "    Total Quality:   " + (solution.length * 40) + "\n";
         result += "    Currency:        " + solution.length + "\n";
         result += "\n";
-        result += "Sets of 40%:\n";
+        result += "Sets of 40:\n";
 
         for (var i in solution) {
             result += "    [";
@@ -245,24 +245,31 @@ function format_output(quals, solution) {
 }
 
 
+function parse_input(value) {
+    return value.trim().replace(/\D+/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
+}
+
+
 function calculate() {
     document.getElementById("output").value = "";
-    var quals = document.getElementById("quals").value.trim().replace(/\D+/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
+    var quals = parse_input(document.getElementById("quals").value);
     var timeout = parseFloat(document.getElementById("timeout").value);
     var solution = find_solution(quals, timeout);
     document.getElementById("output").value = format_output(quals, solution);
 }
 
 
-document.addEventListener("DOMContentLoaded", function(event) {
-    document.getElementById("output").value = "";
+if (typeof attach !== "undefined" && attach) {
+    document.addEventListener("DOMContentLoaded", function(event) {
+        document.getElementById("output").value = "";
 
-    // ctrl-enter to calculate
-    document.getElementById("quals").addEventListener("keypress", function(event) {
-        if (event.keyCode === 13 && event.ctrlKey) {
-            calculate();
-        }
+        // ctrl-enter to calculate
+        document.getElementById("quals").addEventListener("keypress", function(event) {
+            if (event.keyCode === 13 && event.ctrlKey) {
+                calculate();
+            }
+        });
+
+        document.getElementById("calculate").addEventListener("click", calculate);
     });
-
-    document.getElementById("calculate").addEventListener("click", calculate);
-});
+}
