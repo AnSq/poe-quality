@@ -256,26 +256,16 @@ function parse_input(value) {
 }
 
 
-function calculate() {
-    document.getElementById("output").value = "";
-    var quals = parse_input(document.getElementById("quals").value);
-    var timeout = parseFloat(document.getElementById("timeout").value);
+function do_calculate(input, timeout) {
+    var quals = parse_input(input);
     var solution = find_solution(quals, timeout);
-    document.getElementById("output").value = format_output(quals, solution);
+    var output = format_output(quals, solution);
+    postMessage({type:"calculation_complete", output:output});
 }
 
 
-if (typeof attach !== "undefined" && attach) {
-    document.addEventListener("DOMContentLoaded", function(event) {
-        document.getElementById("output").value = "";
-
-        // ctrl-enter to calculate
-        document.getElementById("quals").addEventListener("keypress", function(event) {
-            if (event.keyCode === 13 && event.ctrlKey) {
-                calculate();
-            }
-        });
-
-        document.getElementById("calculate").addEventListener("click", calculate);
-    });
-}
+onmessage = function(e) {
+    if (e.data.type === "calculate") {
+        do_calculate(e.data.input, e.data.timeout);
+    }
+};

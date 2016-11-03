@@ -172,7 +172,7 @@ QUnit.module("Solution finding", function() {
     });
 
 
-    QUnit.test("solution_tree", function(assert) {
+    QUnit.skip("solution_tree", function(assert) {
         assert.expect(0);
     });
 
