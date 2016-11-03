@@ -10,11 +10,6 @@ var inputs = [
     "9 6 9 14 8 9 8 10 7 7 7 7 9 15 13 7 10 16 11 16 5 7 16 18 15"
 ];
 
-var strange_inputs = [
-    "    \t18 8 8   7 6 \n6 11   15\t 10\t7   10\n 7 \n 8 5 7\n8 11 6\n",
-    "15, 15, 12, 8,10 ,7 , 10  , 16 6 8 5; 7; 6; 11 ;13 ; 12  ; 9 16",
-    "9a6s9d14f8 9gh8jkl10z7xc7 7abcdef7 9 15 13 7 10 16 11 16 5 7 16 18 15"
-];
 
 QUnit.module("Utility", function() {
     QUnit.test("sum", function(assert) {
@@ -39,9 +34,10 @@ QUnit.module("Utility", function() {
         assert.deepEqual(parse_input(inputs[1]), answers[1], "normal input");
         assert.deepEqual(parse_input(inputs[2]), answers[2], "normal input");
 
-        assert.deepEqual(parse_input(strange_inputs[0]), answers[0], "extra whitespace, including tabs and newlines");
-        assert.deepEqual(parse_input(strange_inputs[1]), answers[1], "commas and semicolons");
-        assert.deepEqual(parse_input(strange_inputs[2]), answers[2], "arbitrary non-digits");
+        assert.deepEqual(parse_input("    \t18 8 8   7 6 \n6 11   15\t 10\t7   10\n 7 \n 8 5 7\n8 11 6\n"),          answers[0], "extra whitespace, including tabs and newlines");
+        assert.deepEqual(parse_input("15, 15, 12, 8,10 ,7 , 10  , 16 6 8 5; 7; 6; 11 ;13 ; 12  ; 9 16"),             answers[1], "commas and semicolons");
+        assert.deepEqual(parse_input("9a6s9d14f8 9gh8jkl10z7xc7 7abcdef7 9 $$%15 13 7 10'''16\"11 16 5 7 16 18 15"), answers[2], "arbitrary non-digits");
+        assert.deepEqual(parse_input("adfa18 8 8 7 6 6 11 15 10 7 10 7 8 5 7 8 11 6asfsa,"),                         answers[0], "arbitrary non-digits at start and end");
     });
 });
 
@@ -98,8 +94,8 @@ QUnit.module("Multisets", function() {
 
     QUnit.test("multiset_equals", function(assert) {
         assert.ok(multiset_equals(multiset_create(parse_input(inputs[0])), {5:1, 6:3, 7:4, 8:4, 10:2, 11:2, 15:1, 18:1}), "normal");
-        assert.ok(multiset_equals(multiset_create([1, 1, 2, 2, 2, 3, 3]), multiset_create([2, 1, 1, 3, 2, 3, 2])), "reordered input list");
-        assert.ok(multiset_equals({1:2, 3:4, 5:6, 7:8}, {5:6, 1:2, 7:8, 3:4}), "reordered object literal");
+        assert.ok(multiset_equals(multiset_create([1, 1, 2, 2, 2, 3, 3]),  multiset_create([2, 1, 1, 3, 2, 3, 2])),       "reordered input list");
+        assert.ok(multiset_equals({1:2, 3:4, 5:6, 7:8},                    {5:6, 1:2, 7:8, 3:4}),                         "reordered object literal");
     });
 
 
@@ -114,14 +110,14 @@ QUnit.module("Multisets", function() {
 
 
     QUnit.test("multiset_subtract", function(assert) {
-        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6}, {1:1, 3:2, 5:2}), {1:1, 3:2, 5:4}, "normal");
-        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6}, {}), {1:2, 3:4, 5:6}, "normal minus empty set");
-        assert.deepEqual(multiset_subtract({}, {}), {}, "empty minus empty");
-        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6, 7:8}, {3:1, 7:4}), {1:2, 3:3, 5:6, 7:4}, "keys missing from second argument");
-        assert.deepEqual(multiset_subtract({1:9, 5:8}, {1:2, 3:4, 5:6, 7:8}), {1:7, 5:2}, "keys missing from first argument");
-        assert.deepEqual(multiset_subtract({1:2, 3:4}, {1:5, 3:1}), {3:3}, "greater value in second argument");
-        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6}, {1:2}), {3:4, 5:6}, "duplicate key:value pair");
-        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6}, {1:2, 3:4, 5:6}), {}, "identical arguments");
+        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6},      {1:1, 3:2, 5:2}     ), {1:1, 3:2, 5:4},      "normal");
+        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6},      {}                  ), {1:2, 3:4, 5:6},      "normal minus empty set");
+        assert.deepEqual(multiset_subtract({},                   {}                  ), {},                   "empty minus empty");
+        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6, 7:8}, {3:1, 7:4}          ), {1:2, 3:3, 5:6, 7:4}, "keys missing from second argument");
+        assert.deepEqual(multiset_subtract({1:9, 5:8},           {1:2, 3:4, 5:6, 7:8}), {1:7, 5:2},           "keys missing from first argument");
+        assert.deepEqual(multiset_subtract({1:2, 3:4},           {1:5, 3:1}          ), {3:3},                "greater value in second argument");
+        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6},      {1:2}               ), {3:4, 5:6},           "duplicate key:value pair");
+        assert.deepEqual(multiset_subtract({1:2, 3:4, 5:6},      {1:2, 3:4, 5:6}     ), {},                   "identical arguments");
     });
 });
 
@@ -158,8 +154,8 @@ QUnit.module("Solution finding", function() {
 
 
         for (var i = 0; i < forties_list.length; i++) {
-            assert.deepEqual(forties_list[i].slice(0,5), starts[i], "beginning");
-            assert.deepEqual(forties_list[i].slice(forties_list[i].length-5), ends[i], "ending");
+            assert.deepEqual(forties_list[i].slice(0,5),                      starts[i], "beginning");
+            assert.deepEqual(forties_list[i].slice(forties_list[i].length-5), ends[i],   "ending");
         }
 
         for (var i = 0; i < forties_list.length; i++) {
@@ -182,6 +178,7 @@ QUnit.module("Solution finding", function() {
 
 
     QUnit.test("find_solution", function(assert) {
-        assert.expect(0);
+        assert.deepEqual(find_solution(parse_input(inputs[0]), 5), [[18,8,8,6],[8,8,7,6,6,5],[7,11,15,7]]);
+        assert.deepEqual(find_solution(parse_input(inputs[1]), 5), [[15,15,10],[12,8,7,6,7],[12,8,6,5,9],[16,11,13]]);
     });
 });

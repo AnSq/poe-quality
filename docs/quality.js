@@ -252,7 +252,7 @@ function format_output(quals, solution) {
 
 
 function parse_input(value) {
-    return value.trim().replace(/\D+/g, " ").split(" ").map(function(v,i,a){return parseInt(v)});
+    return value.replace(/\D+/g, " ").trim().split(" ").map(function(v,i,a){return parseInt(v)});
 }
 
 
