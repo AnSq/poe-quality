@@ -73,10 +73,16 @@ function multiset_subtract(a, b) {
     var result = multiset_copy(a);
     for (var i in b) {
         if (i in a) {
-            result[i] = a[i] - b[i];
+            var s = a[i] - b[i];
+            if (s > 0) {
+                result[i] = s;
+            }
+            else {
+                delete result[i];
+            }
         }
         else {
-            result[i] = -b[i];
+            delete result[i];
         }
     }
     return result;
