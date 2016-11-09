@@ -5,7 +5,7 @@
         <title>PoE Quality Set Calculator</title>
         <link rel="icon" href="favicon.png" type="image/png">
         <link rel="stylesheet" href="styles.css" type="text/css">
-        <script src="main.js" type="application/javascript"></script>
+        <script src="main.js"></script>
     </head>
     <body>
         <div>
@@ -20,6 +20,10 @@
                     <br>
                     <span class="label-spacer"></span>
                     <input id="calculate" name="calculate" type="button" value="Calculate">
+                    <span id="running">
+                        <input id="stop" name="stop" type="button" value="Stop">
+                        <progress id="progress"></progress>
+                    </span>
                     <hr>
                     <label for="output" class="top">Output:</label>
                     <textarea id="output" name="output" placeholder="Results will appear here" rows="16" cols="48" readonly></textarea>

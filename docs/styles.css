@@ -45,6 +45,11 @@ h1 {
 }
 
 
+#running {
+    display: none;
+}
+
+
 #helpbox {
     display: table;
     margin-left: auto;

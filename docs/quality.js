@@ -198,7 +198,7 @@ function solution_tree(quals_remaining, used, forties_remaining, solutions, max_
 }
 
 
-function format_output(quals, solution) {
+function format_input_info(quals) {
     var result = "";
     result += "Input:\n";
     result += "    Number of Items: " + quals.length + "\n";
@@ -206,6 +206,12 @@ function format_output(quals, solution) {
     result += "    Total Quality:   " + total + "\n";
     result += "    Quality / 40:    " + (total / 40) + "\n";
     result += "\n";
+    return result;
+}
+
+
+function format_solution_info(solution) {
+    var result = "";
 
     if (solution && solution.length) {
         result += "Solution:\n";
@@ -258,14 +264,22 @@ function parse_input(value) {
 
 function do_calculate(input, timeout) {
     var quals = parse_input(input);
+    var input_info = format_input_info(quals);
+    postMessage({type:"input_parsed", input_info:input_info});
+
     var solution = find_solution(quals, timeout);
-    var output = format_output(quals, solution);
-    postMessage({type:"calculation_complete", output:output});
+    var solution_info = format_solution_info(solution);
+    postMessage({type:"calculation_complete", solution_info:solution_info});
+}
+
+
+function log(message) {
+    postMessage({type:"log", message:message});
 }
 
 
 onmessage = function(e) {
-    if (e.data.type === "calculate") {
+    if (e.data.type === "start_calculation") {
         do_calculate(e.data.input, e.data.timeout);
     }
 };
