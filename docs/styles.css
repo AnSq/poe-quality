@@ -23,13 +23,18 @@ hr {
 }
 
 
-input, textarea {
+input, textarea, select {
     margin: 1px;
 }
 
 
 h1 {
     text-align: center;
+}
+
+
+progress {
+    width: 100px;
 }
 
 
@@ -65,7 +70,6 @@ h1 {
 
 #helptoggle:checked + label #helptitle:before {
     content: "▾\a0";
-    /*content: "-\a0";*/
 }
 
 #helptoggle:checked ~ #helpcontent {
@@ -79,7 +83,6 @@ h1 {
 
 #helptitle::before {
     content: "▸\a0";
-    /*content: "+\a0";*/
     text-decoration: none;
     display: inline-block;
 }
@@ -95,4 +98,17 @@ h1 {
     overflow: hidden;
     margin-right: 1.5em;
     text-align: left;
+}
+
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clear {
+    clear: both;
 }

@@ -15,16 +15,38 @@
                     <label for="quals" class="top">Qualities:</label>
                     <textarea id="quals" name="quals" placeholder="Enter quality values here separated by spaces" rows="3" cols="48" autofocus></textarea>
                     <br>
-                    <label for="timeout">Time limit:</label>
-                    <input id="timeout" name="timeout" type="number" min="0" step="any" value="5"> seconds
-                    <br>
-                    <span class="label-spacer"></span>
-                    <input id="calculate" name="calculate" type="button" value="Calculate">
-                    <span id="running">
-                        <input id="stop" name="stop" type="button" value="Stop">
-                        <progress id="progress"></progress>
-                    </span>
+
+                    <div class="left">
+                        <label for="order">Order:</label>
+                        <select id="order" name="order">
+                            <option value="entered">As Entered</option>
+                            <option value="desc">High to Low</option>
+                            <option value="asc">Low to High</option>
+                            <option value="random">Random</option>
+                        </select>
+                    </div>
+                    <div class="right">
+                        <label for="timeout">Time limit:</label>
+                        <input id="timeout" name="timeout" type="number" min="0" step="any" value="5"> seconds
+                    </div>
+                    <div class="clear"></div>
+
+                    <div class="left">
+                        <span class="label-spacer"></span>
+                        <input id="calculate" name="calculate" type="button" value="Calculate">
+                        <span id="running">
+                            <input id="stop" name="stop" type="button" value="Stop">
+                            <progress id="progress"></progress>
+                        </span>
+                    </div>
+
+                    <div class="right">
+                        <input type="reset">
+                    </div>
+                    <div class="clear"></div>
+
                     <hr>
+
                     <label for="output" class="top">Output:</label>
                     <textarea id="output" name="output" placeholder="Results will appear here" rows="16" cols="48" readonly></textarea>
                 </form>

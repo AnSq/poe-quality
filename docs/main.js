@@ -59,9 +59,10 @@ function calculate() {
     ui_update_info();
 
     var input = document.getElementById("quals").value;
+    var order = document.getElementById("order").value;
     var timeout = parseFloat(document.getElementById("timeout").value);
 
-    worker.postMessage({type:"start_calculation", input:input, timeout:timeout});
+    worker.postMessage({type:"start_calculation", input:input, order:order, timeout:timeout});
 }
 
 

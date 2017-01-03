@@ -130,11 +130,12 @@ function find_solution(quals, timeout) {
     }
 
     if (solutions.length) {
-        var solution = solutions.sort(function(a,b) {return b.length - a.length})[0];
+        var solution = solutions.sort((a,b) => (b.length - a.length))[0];
 
         var result = [];
         for (var x in solution) {
             result.push(forties_map[JSON.stringify(solution[x])]);
+            //result.push(multiset_elements(solution[x]));
         }
         return result;
     }
@@ -181,6 +182,7 @@ function solution_tree(quals_remaining, used, forties_remaining, solutions, max_
                 new_used.push(forties_remaining[i]);
 
                 if (solution_tree(multiset_subtract(quals_remaining, forties_remaining[i]), new_used, forties_remaining.slice(i+1), solutions, max_forties, end_time)) {
+                    // if an optimal solution has been found, unwind the stack tree
                     return true;
                 }
             }
@@ -190,11 +192,11 @@ function solution_tree(quals_remaining, used, forties_remaining, solutions, max_
         solutions.push(used);
     }
 
-    if (solutions.length && (solutions[solutions.length-1].length >= max_forties)) {
-        return true;
+    if (solutions.length && (solutions[solutions.length-1].length >= max_forties)) { // if there is a solution and the last solution found is optimal
+        return true; // start unwinding the stack tree
     }
 
-    return false;
+    return false; // continue looking
 }
 
 
@@ -257,13 +259,47 @@ function format_solution_info(solution) {
 }
 
 
-function parse_input(value) {
-    return value.replace(/\D+/g, " ").trim().split(" ").map(function(v,i,a){return parseInt(v)});
+function parse_input(value, order) {
+    var result = value.replace(/\D+/g, " ").trim().split(" ").map(function(v,i,a){return parseInt(v)});
+
+    switch (order) {
+        case "entered":
+            break;
+        case "desc":
+            result = sort(result, -1);
+            break;
+        case "asc":
+            result = sort(result, 1);
+            break;
+        case "random":
+            result = shuffle(result);
+            break;
+    }
+
+    return result;
 }
 
 
-function do_calculate(input, timeout) {
-    var quals = parse_input(input);
+function sort(arr, order) {
+    return arr.sort((a,b) => a == b ? 0 : a > b ? order : -order);
+}
+
+
+function shuffle(a) {
+    var j;
+    var tmp;
+    for (var i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        tmp  = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+    return a;
+}
+
+
+function do_calculate(input, order, timeout) {
+    var quals = parse_input(input, order);
     var input_info = format_input_info(quals);
     postMessage({type:"input_parsed", input_info:input_info});
 
@@ -273,13 +309,8 @@ function do_calculate(input, timeout) {
 }
 
 
-function log(message) {
-    postMessage({type:"log", message:message});
-}
-
-
 onmessage = function(e) {
     if (e.data.type === "start_calculation") {
-        do_calculate(e.data.input, e.data.timeout);
+        do_calculate(e.data.input, e.data.order, e.data.timeout);
     }
 };
