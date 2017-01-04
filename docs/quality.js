@@ -246,12 +246,12 @@ function format_solution_info(solution) {
     }
 
     if (timed_out) {
-        result += "\n\nCalculation exceeded time limit in stage " + timed_out + "\n";
+        result += "\n\nCalculation exceeded time limit in stage " + timed_out + ".\n";
         if (timed_out === 1) {
-            result += "Try using fewer items or adding more time"
+            result += "Try using fewer items or adding more time."
         }
         else if (timed_out === 2) {
-            result += "Adding more time may give a better solution";
+            result += "Adding more time or using a different\norder may give a better solution.";
         }
     }
 

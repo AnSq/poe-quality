@@ -23,6 +23,16 @@ QUnit.module("Utility", function() {
     });
 
 
+    QUnit.test("sort", function(assert) {
+        assert.deepEqual(sort([2,1,3,4,6,5],  1), [1,2,3,4,5,6], "ascending");
+        assert.deepEqual(sort([1,2,1,2,1,2],  1), [1,1,1,2,2,2], "ascending");
+        assert.deepEqual(sort([3,3,3,3,3,3],  1), [3,3,3,3,3,3], "ascending");
+        assert.deepEqual(sort([2,1,3,4,6,5], -1), [6,5,4,3,2,1], "descending");
+        assert.deepEqual(sort([1,2,1,2,1,2], -1), [2,2,2,1,1,1], "descending");
+        assert.deepEqual(sort([3,3,3,3,3,3], -1), [3,3,3,3,3,3], "descending");
+    });
+
+
     QUnit.test("parse_input", function(assert) {
         var answers = [
             [18, 8, 8, 7, 6, 6, 11, 15, 10, 7, 10, 7, 8, 5, 7, 8, 11, 6],
@@ -30,14 +40,19 @@ QUnit.module("Utility", function() {
             [9, 6, 9, 14, 8, 9, 8, 10, 7, 7, 7, 7, 9, 15, 13, 7, 10, 16, 11, 16, 5, 7, 16, 18, 15]
         ];
 
-        assert.deepEqual(parse_input(inputs[0]), answers[0], "normal input");
-        assert.deepEqual(parse_input(inputs[1]), answers[1], "normal input");
-        assert.deepEqual(parse_input(inputs[2]), answers[2], "normal input");
+        assert.deepEqual(parse_input(inputs[0], "entered"), answers[0], "normal input");
+        assert.deepEqual(parse_input(inputs[1], "entered"), answers[1], "normal input");
+        assert.deepEqual(parse_input(inputs[2], "entered"), answers[2], "normal input");
 
         assert.deepEqual(parse_input("    \t18 8 8   7 6 \n6 11   15\t 10\t7   10\n 7 \n 8 5 7\n8 11 6\n"),          answers[0], "extra whitespace, including tabs and newlines");
         assert.deepEqual(parse_input("15, 15, 12, 8,10 ,7 , 10  , 16 6 8 5; 7; 6; 11 ;13 ; 12  ; 9 16"),             answers[1], "commas and semicolons");
         assert.deepEqual(parse_input("9a6s9d14f8 9gh8jkl10z7xc7 7abcdef7 9 $$%15 13 7 10'''16\"11 16 5 7 16 18 15"), answers[2], "arbitrary non-digits");
         assert.deepEqual(parse_input("adfa18 8 8 7 6 6 11 15 10 7 10 7 8 5 7 8 11 6asfsa,"),                         answers[0], "arbitrary non-digits at start and end");
+
+        assert.deepEqual(parse_input(inputs[0], "asc"), [5,6,6,6,7,7,7,7,8,8,8,8,10,10,11,11,15,18], "sort ascending");
+        assert.deepEqual(parse_input(inputs[1], "asc"), [5,6,6,7,7,8,8,9,10,10,11,12,12,13,15,15,16,16], "sort ascending");
+        assert.deepEqual(parse_input(inputs[0], "desc"), [18,15,11,11,10,10,8,8,8,8,7,7,7,7,6,6,6,5], "sort descending");
+        assert.deepEqual(parse_input(inputs[1], "desc"), [16,16,15,15,13,12,12,11,10,10,9,8,8,7,7,6,6,5], "sort descending");
     });
 });
 
