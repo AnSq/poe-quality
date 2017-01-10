@@ -132,12 +132,18 @@ function find_solution(quals, timeout) {
     if (solutions.length) {
         var solution = solutions.sort((a,b) => (b.length - a.length))[0];
 
-        var result = [];
-        for (var x in solution) {
-            result.push(forties_map[JSON.stringify(solution[x])]);
-            //result.push(multiset_elements(solution[x]));
+        var incl = [];
+        for (var i = 0; i < solution.length; i++) {
+            incl.push(forties_map[JSON.stringify(solution[i])]);
+            //incl.push(multiset_elements(solution[i]));
         }
-        return result;
+
+        var exclude_ms = quals_ms;
+        for (var i  = 0; i < solution.length; i++) {
+            exclude_ms = multiset_subtract(exclude_ms, solution[i]);
+        }
+
+        return {"include":incl, "exclude":multiset_elements(exclude_ms)};
     }
     else {
         return null;
@@ -200,6 +206,23 @@ function solution_tree(quals_remaining, used, forties_remaining, solutions, max_
 }
 
 
+function format_array(a) {
+    var result = "[";
+    for (var i in a) {
+        if (a[i].toString().length < 2) {
+            result += " ";
+        }
+        result += a[i];
+        if (i < a.length - 1) {
+            result += ",  ";
+        }
+    }
+    result += "]";
+
+    return result;
+}
+
+
 function format_input_info(quals) {
     var result = "";
     result += "Input:\n";
@@ -212,8 +235,10 @@ function format_input_info(quals) {
 }
 
 
-function format_solution_info(solution) {
+function format_solution_info(s) {
     var result = "";
+
+    var solution = s["include"];
 
     if (solution && solution.length) {
         result += "Solution:\n";
@@ -225,21 +250,15 @@ function format_solution_info(solution) {
         result += "Sets of 40:\n";
 
         for (var i in solution) {
-            result += "    [";
-            for (var j in solution[i]) {
-                if (solution[i][j].toString().length < 2) {
-                    result += " ";
-                }
-                result += solution[i][j];
-                if (j < solution[i].length - 1) {
-                    result += ",  ";
-                }
-            }
-            result += "]";
+            result += "    " + format_array(solution[i])
             if (i < solution.length - 1) {
                 result += "\n";
             }
         }
+
+        result += "\n\nItems not included in sets of 40:\n"
+        result += "    " + format_array(s["exclude"]);
+
     }
     else {
         result += "No solution found";
