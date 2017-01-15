@@ -238,9 +238,9 @@ function format_input_info(quals) {
 function format_solution_info(s) {
     var result = "";
 
-    var solution = s["include"];
+    if (s && s["include"] && s["include"].length) {
+        var solution = s["include"];
 
-    if (solution && solution.length) {
         result += "Solution:\n";
         var num_items = solution.reduce(function(p,c){return p+c.length}, 0);
         result += "    Number of Items: " + num_items + "\n";
