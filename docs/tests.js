@@ -2,6 +2,7 @@
 
 
 var timeout = 5;
+var timed_out;
 
 
 var inputs = [
@@ -193,7 +194,10 @@ QUnit.module("Solution finding", function() {
 
 
     QUnit.test("find_solution", function(assert) {
-        assert.deepEqual(find_solution(parse_input(inputs[0]), 5), {"include":[[18,8,8,6],[8,8,7,6,6,5],[7,11,15,7]], "exclude":[7,10,10,11]});
-        assert.deepEqual(find_solution(parse_input(inputs[1]), 5), {"include":[[15,15,10],[12,8,7,6,7],[12,8,6,5,9],[16,11,13]], "exclude":[10,16]});
+        assert.deepEqual(find_solution(parse_input(inputs[0]), timeout), {"include":[[18,8,8,6],[8,8,7,6,6,5],[7,11,15,7]], "exclude":[7,10,10,11]}, "normal");
+        assert.deepEqual(find_solution(parse_input(inputs[1]), timeout), {"include":[[15,15,10],[12,8,7,6,7],[12,8,6,5,9],[16,11,13]], "exclude":[10,16]}, "normal");
+
+        assert.deepEqual(find_solution(parse_input(inputs[2]), -1), null, "timeout 1");
+        assert.equal(timed_out, 1, "timed_out == 1");
     });
 });
