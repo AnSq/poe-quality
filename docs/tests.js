@@ -193,7 +193,7 @@ QUnit.module("Solution finding", function() {
 
 
     QUnit.test("find_solution", function(assert) {
-        assert.deepEqual(find_solution(parse_input(inputs[0]), 5), [[18,8,8,6],[8,8,7,6,6,5],[7,11,15,7]]);
-        assert.deepEqual(find_solution(parse_input(inputs[1]), 5), [[15,15,10],[12,8,7,6,7],[12,8,6,5,9],[16,11,13]]);
+        assert.deepEqual(find_solution(parse_input(inputs[0]), 5), {"include":[[18,8,8,6],[8,8,7,6,6,5],[7,11,15,7]], "exclude":[7,10,10,11]});
+        assert.deepEqual(find_solution(parse_input(inputs[1]), 5), {"include":[[15,15,10],[12,8,7,6,7],[12,8,6,5,9],[16,11,13]], "exclude":[10,16]});
     });
 });
